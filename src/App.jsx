@@ -1,15 +1,14 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+
+import Canvas from './Components/Canvas'
+import Toolbar from  './Components/Toolbar'
 
 function App() {
   return (
     <div>
-      <h1>Hello world</h1>
+         <Toolbar/> 
+        <Canvas/> 
     </div>
-  )
+  );
 }
 
 export default App
