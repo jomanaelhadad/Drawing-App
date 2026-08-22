@@ -1,4 +1,4 @@
-function Toolbar({ color, brushSize, setColor, setBrushSize }) {
+function Toolbar({ color, brushSize, setColor, setBrushSize, clearCanvas, undoButton }) {
 
     // handling color change using a function 
     function handleColorChange(event) {
@@ -7,26 +7,34 @@ function Toolbar({ color, brushSize, setColor, setBrushSize }) {
 
     // handling brush size using a function 
     function handleBrushSize(event) {
-        setBrushSize(event.target.value)
+        setBrushSize(Number(event.target.value));
     }
 
     return (
-        <div>
+        <div className="toolbar">
+
+            <div className="controls">
             <label>Colour: </label>
             <input
                 type="color"
+                value={color}
                 onChange={handleColorChange}></input>
-
-            <br></br>
 
             <label>Brusher Size: </label>
             <input
                 type="range"
-                onChange={handleBrushSize}></input>
+                value={brushSize}
+                min="1"
+                max="70"
+                onChange={handleBrushSize}>
 
-            <br></br>
-
-            <button>Clear</button>
+                </input>
+            </div>
+                
+        <div className="btns">
+        <button onClick={clearCanvas}>Clear</button>
+        <button onClick={undoButton}>Undo</button>
+        </div>
         </div>
     )
 }

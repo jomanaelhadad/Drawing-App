@@ -1,17 +1,17 @@
-import { useState, useRef } from "react";
+import { forwardRef, useRef, useImperativeHandle } from "react";
 
-function Canvas({ color, brushSize }) {
+const Canvas = forwardRef(function Canvas({ color, brushSize }, ref) {
+
+
+    useImperativeHandle(ref, () => ({ clearCanvas, undoButton }));
+
 
     // using the useRef to access the canvas from the DOM 
     const canvasRef = useRef(null);
     const lastPosition = useRef(null);
     const isDrawing = useRef(false);
-    const stokes = useRef([])
-
-    // empty box to have an empty array where we will store our coordinates of our pointer 
+    const strokes = useRef([])
     const points = useRef([])
-
-
 
     // HANDLE POINTER DOWN 
     function handlePointerDown(event) {
@@ -37,6 +37,9 @@ function Canvas({ color, brushSize }) {
     function handlePointerUp() {
         isDrawing.current = false;
         lastPosition.current = null;
+
+        strokes.current.push(points.current);
+        console.log(strokes.current)
     }
 
     // HANDLE POINTER MOVE 
@@ -49,7 +52,6 @@ function Canvas({ color, brushSize }) {
 
         if (isDrawing.current) {
             points.current.push([x, y]);
-
 
             // draw individual paths like how you would normally draw 
             ctx.beginPath();
@@ -67,26 +69,43 @@ function Canvas({ color, brushSize }) {
 
     }
 
-    // REDRAW 
-    function reDraw() {
+    // CLEAR CANVAS 
+    function clearCanvas() {
+        const canvas = canvasRef.current;
+        const ctx = canvas.getContext("2d");
         ctx.clearRect(0, 0, canvas.width, canvas.height);
     }
 
+    //UNDO BUTTON 
+    function undoButton() {
+        const canvas = canvasRef.current;
+        const ctx = canvas.getContext("2d");
+    
+        strokes.current.pop();
+        
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    }
+
     return (
-        <canvas
-            ref={canvasRef}
-            width="800"
-            height="500"
-            onPointerDown={handlePointerDown}
-            onPointerMove={handlePointerMove}
-            onPointerUp={handlePointerUp}
-            onPointerLeave={handlePointerUp}
-        >
+        <div>
+            <canvas
+                ref={canvasRef}
+                width="800"
+                height="500"
+                onPointerDown={handlePointerDown}
+                onPointerMove={handlePointerMove}
+                onPointerUp={handlePointerUp}
+                onPointerLeave={handlePointerUp}
+            >
 
-        </canvas>
-    )
+            </canvas>
 
-}
+
+        </div>
+    );
+
+});
 
 export default Canvas
 
