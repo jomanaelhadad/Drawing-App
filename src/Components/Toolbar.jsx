@@ -34,6 +34,8 @@ function Toolbar({ color, brushSize, setColor, setBrushSize, clearCanvas, undoBu
         <div className="btns">
         <button onClick={clearCanvas}>Clear</button>
         <button onClick={undoButton}>Undo</button>
+        <button> Save Drawing </button>
+        <button>Layer</button>
         </div>
         </div>
     )
