@@ -1,23 +1,24 @@
 import { forwardRef, useRef, useImperativeHandle } from "react";
 
-const Canvas = forwardRef(function Canvas({ color, brushSize }, ref) {
+const Canvas = forwardRef(function Canvas({ color, brushSize , eraserSize, eraserMode, setCanvasCleared }, ref) {
 
 
-    useImperativeHandle(ref, () => ({ clearCanvas, undoButton }));
+    useImperativeHandle(ref, () => ({ clearCanvas, undoButton, saveCanvas }));
 
 
     // using the useRef to access the canvas from the DOM 
     const canvasRef = useRef(null);
     const lastPosition = useRef(null);
     const isDrawing = useRef(false);
-    const strokes = useRef([])
-    const points = useRef([])
+    const strokes = useRef([]);
+    const points = useRef([]);
 
     // HANDLE POINTER DOWN 
     function handlePointerDown(event) {
 
         // getBoundingClientRect() returns the position and size of an element (canvas) relative to the browser window
         const canvas = canvasRef.current;
+        setCanvasCleared(false);
         const rect = canvas.getBoundingClientRect();
         isDrawing.current = true;
 
@@ -53,20 +54,50 @@ const Canvas = forwardRef(function Canvas({ color, brushSize }, ref) {
         if (isDrawing.current) {
             points.current.push([x, y]);
 
+
             // draw individual paths like how you would normally draw 
             ctx.beginPath();
             // makes an invisible line without drawing yet to see the pointer's coordinate
             ctx.moveTo(lastPosition.current.x, lastPosition.current.y);
             // add a line between x and y 
             ctx.lineTo(x, y);
-            ctx.strokeStyle = color;
-            ctx.lineWidth = brushSize * event.pressure;
+
+            if(eraserMode) {
+                ctx.globalCompositeOperation = "destination-out"; 
+                ctx.lineWidth = eraserSize; 
+            } else {
+                ctx.globalCompositeOperation = "source-over";
+                ctx.strokeStyle = color;
+                ctx.lineWidth = brushSize * event.pressure;
+
+            }
+
             ctx.lineCap = "round";
             ctx.lineJoin = "round";
             ctx.stroke();
+
             lastPosition.current = { x, y };
         }
 
+    }
+    //SAVE CANVAS 
+    function saveCanvas(){
+    const canvas = canvasRef.current;
+
+    const saveCanvas = document.createElement("canvas");
+    saveCanvas.width = canvas.width;
+    saveCanvas.height = canvas.height;
+
+    const ctx = saveCanvas.getContext("2d");
+
+    // White background
+    ctx.fillStyle = "white";
+    ctx.fillRect(0, 0, saveCanvas.width, saveCanvas.height);
+
+    // Put the drawing on top
+    ctx.drawImage(canvas, 0, 0);
+
+    return saveCanvas.toDataURL("image/png");
     }
 
     // CLEAR CANVAS 

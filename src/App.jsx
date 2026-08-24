@@ -19,26 +19,42 @@ function App() {
   const canvasRef = useRef(null);
 
   const [brushSize, setBrushSize] = useState(5);
+  const [eraserSize, setEraserSize] = useState(5);
+  const [eraserMode, setEraserMode] = useState(false);
+  const [canvasCleared, setCanvasCleared] = useState(false);
   const [color, setColor] = useState("black");
 
-  
+
 
   return (
     <div>
 
       <Toolbar
+        // functions only the parent can access 
         clearCanvas={() => canvasRef.current.clearCanvas()}
         undoButton={() => canvasRef.current.undoButton()}
+        saveCanvas={() => canvasRef.current.saveCanvas()}
+
         color={color}
+        canvasCleared={canvasCleared}
+        setCanvasCleared={setCanvasCleared}
         setColor={setColor}
         setBrushSize={setBrushSize}
         brushSize={brushSize}
+        eraserSize={eraserSize}
+        setEraserSize={setEraserSize}
+        eraserMode={eraserMode}
+        setEraserMode={setEraserMode}
       />
 
       <Canvas
+
         ref={canvasRef}
+        eraserMode={eraserMode}
         brushSize={brushSize}
+        eraserSize={eraserSize}
         color={color}
+        setCanvasCleared={setCanvasCleared}
       />
     </div>
   );
