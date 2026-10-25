@@ -11,4 +11,4 @@ This is a drawing application that I implementing using React and Electron.
 - `npm dev run`
 - in the terminal. A link appear that will allow you to open a local host. This will allow you to draw on the website version of the app.
 - To run the electron version. In a new terminal (make sure your old one is still running) write
-- ``npm run electron` this will open the electron application. 
+- `npm run electron` this will open the electron application. 
